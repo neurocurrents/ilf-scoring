@@ -1,6 +1,1 @@
-services:
-  - type: web
-    name: ilf-scoring
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+
