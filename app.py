@@ -1,7 +1,9 @@
 
 from flask import Flask, render_template, redirect, url_for, request, session
+import os
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
+
 
 @app.route('/')
 def home():
@@ -29,8 +31,7 @@ def select_tool():
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
-
 if __name__ == '__main__':
-    app.run(debug=True)
-    if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
+
