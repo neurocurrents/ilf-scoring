@@ -5,10 +5,14 @@
 </head>
 <body>
     <h2>Select a Tool</h2>
-    <form method="post" action="/use-tool">
-        <label><input type="radio" name="tool" value="ilf"> ILF Scoring</label><br>
-        <label><input type="radio" name="tool" value="csd"> CSD Analyzer</label><br>
-        <input type="submit" value="Continue">
-    </form>
+<form method="POST">
+  <label for="tool">Choose a tool:</label>
+  <select name="tool" id="tool">
+    <option value="ilf">ILF Scoring</option>
+    <option value="csd">CSD Analyzer</option>
+  </select>
+  <button type="submit">Continue</button>
+</form>
+
 </body>
 </html>
