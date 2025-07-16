@@ -3,6 +3,7 @@ services:
     name: ilf-scoring
     env: python
     buildCommand: ""
-    startCommand: gunicorn ilf_scoring.app:app
+    startCommand: gunicorn app:app
     plan: free
+
 
