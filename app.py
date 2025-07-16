@@ -30,6 +30,32 @@ def score_ilf():
     scores = {"arousal": 0, "emotion": 0, "sleep": 0}
 
     for i in range(1, 4):
+        scores["arousal"] += int(data.get(f"q{i}", 0))
+    for i in range(4, 7):
+        scores["emotion"] += int(data.get(f"q{i}", 0))
+    for i in range(7, 10):
+        scores["sleep"] += int(data.get(f"q{i}", 0))
+
+    # Optional EEG text box and file upload
+    eeg_text = data.get("eeg_data")
+    eeg_file = request.files.get("eeg_file")
+
+    print("Received EEG data:", eeg_text[:100] if eeg_text else "None")
+    print("Received EEG file:", eeg_file.filename if eeg_file else "None")
+
+    return {
+        "status": "success",
+        "scores": scores,
+        "eeg_text_present": bool(eeg_text),
+        "eeg_file_uploaded": eeg_file.filename if eeg_file else None,
+    }
+
+@app.route("/score-ilf", methods=["POST"])
+def score_ilf():
+    data = request.form
+    scores = {"arousal": 0, "emotion": 0, "sleep": 0}
+
+    for i in range(1, 4):
         scores["arousal"] += int(data.get(f"responses[{i}]", 0))
     for i in range(4, 7):
         scores["emotion"] += int(data.get(f"responses[{i}]", 0))
