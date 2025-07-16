@@ -1,9 +1,5 @@
 # Neuro-AI EEG Learning Prediction Notebook
 # Standalone version for scoring and SHAP interpretation
-@app.route("/")
-def index():
-    return "Flask app is alive!"
-
 
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
@@ -16,7 +12,6 @@ from sklearn.model_selection import train_test_split
 app = Flask(__name__)
 app.secret_key = "your-temp-key"  # Needed for session management
 
-# Route for public ILF scoring form (with GET and POST)
 @app.route("/score-ilf-public", methods=["GET", "POST"])
 def score_ilf_public():
     if request.method == "GET":
@@ -35,9 +30,30 @@ def score_ilf_public():
     eeg_text = data.get("eeg_data")
     eeg_file = request.files.get("eeg_file")
 
-    print("Received EEG data:", eeg_text[:100] if eeg_text else "None")
-    print("Received EEG file:", eeg_file.filename if eeg_file else "None")
-
+    return f"""
+    <html>
+      <head>
+        <title>ILF Scoring Results</title>
+        <style>
+          body {{ font-family: Arial; padding: 40px; background: #f9f9f9; }}
+          .box {{ background: #fff; border-radius: 12px; padding: 30px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }}
+          h2 {{ text-align: center; color: #003366; }}
+          p {{ font-size: 18px; margin-bottom: 10px; }}
+        </style>
+      </head>
+      <body>
+        <div class="box">
+          <h2>ILF Scoring Summary</h2>
+          <p><strong>Arousal:</strong> {scores['arousal']}</p>
+          <p><strong>Emotional Stability:</strong> {scores['emotion']}</p>
+          <p><strong>Sleep & Recovery:</strong> {scores['sleep']}</p>
+          <hr>
+          <p><strong>EEG Text Provided:</strong> {'Yes' if eeg_text else 'No'}</p>
+          <p><strong>EEG File Uploaded:</strong> {eeg_file.filename if eeg_file else 'No file'}</p>
+        </div>
+      </body>
+    </html>
+    """
     return f"""
     <html>
       <head>
