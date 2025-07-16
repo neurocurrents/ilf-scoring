@@ -44,6 +44,14 @@
     <div class="section">
       <button onclick="window.print()">Save Report as PDF</button>
     </div>
+<h2>ILF Scoring Report</h2>
+
+<p><strong>Arousal Score:</strong> {{ arousal }} – {{ feedback.arousal }}</p>
+<p><strong>Emotional Stability Score:</strong> {{ emotion }} – {{ feedback.emotion }}</p>
+<p><strong>Sleep Score:</strong> {{ sleep }} – {{ feedback.sleep }}</p>
+
+<a href="/ilf-form">Submit Another</a>
+  
   </div>
 </body>
 </html>
