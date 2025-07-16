@@ -35,10 +35,12 @@ def score_ilf_public():
         "eeg_file_uploaded": eeg_file.filename if eeg_file else None,
     }
 
-@app.route("/score-ilf", methods=["POST"])
-def score_ilf():
-    data = request.form
-    scores = {"arousal": 0, "emotion": 0, "sleep": 0}
+@app.route("/score-ilf-public", methods=["GET", "POST"])
+def score_ilf_public():
+    if request.method == "GET":
+        return "<p>This endpoint is live. Submit using POST to receive scores.</p>"
+    # existing POST logic follows...
+
 
     for i in range(1, 4):
         scores["arousal"] += int(data.get(f"q{i}", 0))
