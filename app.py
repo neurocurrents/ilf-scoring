@@ -54,12 +54,19 @@ def score_ilf():
     print("Received EEG data:", eeg_text[:100] if eeg_text else "None")
     print("Received EEG file:", eeg_file.filename if eeg_file else "None")
 
-    return {
-        "status": "success",
-        "scores": scores,
-        "eeg_text_present": bool(eeg_text),
-        "eeg_file_uploaded": eeg_file.filename if eeg_file else None,
-    }
+return f"""
+<html>
+  <head><title>ILF Scoring Results</title></head>
+  <body>
+    <h2>Scoring Complete</h2>
+    <p><strong>Arousal:</strong> {scores['arousal']}</p>
+    <p><strong>Emotional Stability:</strong> {scores['emotion']}</p>
+    <p><strong>Sleep & Recovery:</strong> {scores['sleep']}</p>
+    <p><strong>EEG Text Provided:</strong> {'Yes' if eeg_text else 'No'}</p>
+    <p><strong>EEG File Uploaded:</strong> {eeg_file.filename if eeg_file else 'No file'}</p>
+  </body>
+</html>
+"""
 
 @app.route("/score-ilf", methods=["POST"])
 def score_ilf():
