@@ -24,6 +24,105 @@ def login():
             return "Incorrect password", 403
     return render_template("login.html")
 
+@app.route("/score-ilf", methods=["POST"])
+def score_ilf():
+    data = request.form
+    scores = {"arousal": 0, "emotion": 0, "sleep": 0}
+
+    for i in range(1, 4):
+        scores["arousal"] += int(data.get(f"responses[{i}]", 0))
+    for i in range(4, 7):
+        scores["emotion"] += int(data.get(f"responses[{i}]", 0))
+    for i in range(7, 11):
+        scores["sleep"] += int(data.get(f"responses[{i}]", 0))
+
+    feedback = {
+        "arousal": "High self-regulation" if scores["arousal"] >= 12 else "Needs support",
+        "emotion": "Stable" if scores["emotion"] >= 12 else "Volatile",
+        "sleep": "Restorative" if scores["sleep"] >= 12 else "Disrupted"
+    }
+
+    return render_template("report_ilf.html",
+        arousal=scores["arousal"],
+        emotion=scores["emotion"],
+        sleep=scores["sleep"],
+        feedback=feedback
+    )
+
+
+   # Flask route to handle ILF scoring + optional amplitude analysis
+@app.route("/score-ilf", methods=["POST"])
+def score_ilf():
+    data = request.form
+
+    # Parse domain ratings
+    scores = {"arousal": 0, "emotion": 0, "sleep": 0}
+    for i in range(1, 4):
+        scores["arousal"] += int(data.get(f"responses[{i}]", 0))
+    for i in range(4, 7):
+        scores["emotion"] += int(data.get(f"responses[{i}]", 0))
+    for i in range(7, 10):
+        scores["sleep"] += int(data.get(f"responses[{i}]", 0))
+
+    # Classify domain response
+    def classify(score):
+        if score >= 12:
+            return "Strong Function"
+        elif score >= 8:
+            return "Moderate"
+        else:
+            return "Needs Support"
+
+    ratings = {k: classify(v) for k, v in scores.items()}
+
+    # Process optional amplitude input
+    raw_amps = data.get("amplitudes", "").strip()
+    amp_plot = None
+    amp_category = None
+
+    if raw_amps:
+        try:
+            amplitudes = [float(x) for x in raw_amps.split(",") if x.strip()]
+            if 10 <= len(amplitudes) <= 40:
+                from matplotlib import pyplot as plt
+                import numpy as np
+                sessions = list(range(1, len(amplitudes) + 1))
+                slope = np.polyfit(sessions, amplitudes, 1)[0]
+                volatility = np.std(amplitudes)
+                
+                if slope > 0.03 and volatility < 0.07:
+                    amp_category = "Stable Improver"
+                elif slope > 0.03 and volatility >= 0.07:
+                    amp_category = "Volatile Improver"
+                elif slope <= 0.03 and volatility < 0.07:
+                    amp_category = "Flatline"
+                else:
+                    amp_category = "Unstable Trend"
+
+                # Save plot
+                plt.figure(figsize=(10, 4))
+                plt.plot(sessions, amplitudes, marker="o", label="ILF Amplitude")
+                plt.plot(sessions, np.poly1d(np.polyfit(sessions, amplitudes, 1))(sessions), linestyle="--", label="Trend")
+                plt.title("ILF Amplitude Trend")
+                plt.xlabel("Session")
+                plt.ylabel("Amplitude")
+                plt.legend()
+                plt.tight_layout()
+                amp_plot = "ilf_amp_plot.png"
+                plt.savefig(f"static/{amp_plot}")
+                plt.close()
+        except Exception as e:
+            print("Amplitude parsing error:", e)
+
+    return render_template("report_ilf.html",
+                           arousal=ratings["arousal"],
+                           emotion=ratings["emotion"],
+                           sleep=ratings["sleep"],
+                           amp_category=amp_category,
+                           amp_plot=amp_plot)
+
+
+
 @app.route("/tools")
 def tool_selection():
     if not session.get('logged_in'):
