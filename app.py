@@ -13,16 +13,27 @@ from sklearn.model_selection import train_test_split
 app = Flask(__name__)
 app.secret_key = "your-temp-key"  # Needed for session management
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        password = request.form.get("password")
-        if password == "neurobeta":
-            session['logged_in'] = True
-            return redirect(url_for("tool_selection"))
-        else:
-            return "Incorrect password", 403
-    return render_template("login.html")
+@app.route("/score-ilf-public", methods=["POST"])
+def score_ilf_public():
+    data = request.form
+    scores = {"arousal": 0, "emotion": 0, "sleep": 0}
+
+    for i in range(1, 4):
+        scores["arousal"] += int(data.get(f"q{i}", 0))
+    for i in range(4, 7):
+        scores["emotion"] += int(data.get(f"q{i}", 0))
+    for i in range(7, 10):
+        scores["sleep"] += int(data.get(f"q{i}", 0))
+
+    eeg_text = data.get("eeg_data")
+    eeg_file = request.files.get("eeg_file")
+
+    return {
+        "status": "success",
+        "scores": scores,
+        "eeg_text_present": bool(eeg_text),
+        "eeg_file_uploaded": eeg_file.filename if eeg_file else None,
+    }
 
 @app.route("/score-ilf", methods=["POST"])
 def score_ilf():
