@@ -11,6 +11,24 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
 app = Flask(__name__)
+app.secret_key = "your-temp-key"  # Needed for session management
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        password = request.form.get("password")
+        if password == "neurobeta":
+            session['logged_in'] = True
+            return redirect(url_for("tool_selection"))
+        else:
+            return "Incorrect password", 403
+    return render_template("login.html")
+
+@app.route("/tools")
+def tool_selection():
+    if not session.get('logged_in'):
+        return redirect(url_for("login"))
+    return render_template("select_tool.html")
 
 # Simulate EEG dataset (same as your uploaded model)
 np.random.seed(42)
