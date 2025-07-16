@@ -1,0 +1,49 @@
+<!-- report_ilf.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ILF Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 40px; background: #f4f4f4; color: #333; }
+    .container { max-width: 800px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { color: #2c3e50; }
+    .score { font-size: 1.5em; margin-top: 20px; color: #1a5276; }
+    .section { margin-top: 30px; }
+    img { max-width: 100%; border-radius: 8px; }
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button:hover { background-color: #2980b9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Infra-Low Frequency (ILF) Scoring Report</h2>
+    <p class="score">Predicted Learning Trend Score (PC1): <strong>{{ prediction }}</strong></p>
+
+    <div class="section">
+      <h3>Interpretation</h3>
+      <p>This PC1 score represents a predicted trend in response to ILF neurofeedback training, based on session data and EEG-related features.</p>
+      <p>Higher scores may suggest stronger or more consistent learning trajectories, while lower scores could reflect irregular or slower gains. Use this trend as an aid to clinical decisions, not a definitive outcome.</p>
+    </div>
+
+    <div class="section">
+      <h3>Model Explanation (SHAP)</h3>
+      <p>The following chart shows which features contributed most to this prediction:</p>
+      <img src="{{ url_for('static', filename=shap_image) }}" alt="SHAP bar chart">
+    </div>
+
+    <div class="section">
+      <button onclick="window.print()">Save Report as PDF</button>
+    </div>
+  </div>
+</body>
+</html>
