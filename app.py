@@ -1,5 +1,9 @@
 # Neuro-AI EEG Learning Prediction Notebook
 # Standalone version for scoring and SHAP interpretation
+@app.route("/")
+def index():
+    return "Flask app is alive!"
+
 
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
