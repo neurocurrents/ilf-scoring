@@ -1,10 +1,5 @@
 # Neuro-AI EEG Learning Prediction Notebook
 # Standalone version for scoring and SHAP interpretation
-@app.route("/")
-def index():
-    return "Flask is alive."
-
-
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 import numpy as np
@@ -13,13 +8,17 @@ import shap
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
-app = Flask(__name__)
-app.secret_key = "your-temp-key"  # Needed for session management
+app = Flask(__name__)  # Move this UP here
+app.secret_key = "your-temp-key"
+
+@app.route("/")
+def index():
+    return "Flask is alive."
 
 @app.route("/score-ilf-public", methods=["GET", "POST"])
 def score_ilf_public():
-    if request.method == "GET":
-        return "<p>This endpoint is live. Submit using POST to receive scores.</p>"
+    ...
+
 
     data = request.form
     scores = {"arousal": 0, "emotion": 0, "sleep": 0}
