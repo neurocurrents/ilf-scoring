@@ -39,7 +39,7 @@ def score_ilf_public():
 
     else:
         average_amplitude = change = percent_change = stability_index = response_class = trend = None
-        shap_image = "shap_placeholder.png"  # Later this could be dynamically generated or selected
+        shap_image = "shap_2025_sample.png"  # Later this could be dynamically generated or selected
         
 import matplotlib.pyplot as plt
 import io
