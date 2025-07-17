@@ -53,13 +53,12 @@ plt.xlabel("Session")
 plt.ylabel("Amplitude")
 plt.tight_layout()
 
-# Save plot to a base64 string
-buf = io.BytesIO()
-plt.savefig(buf, format='png')
-buf.seek(0)
-trend_plot = base64.b64encode(buf.read()).decode('utf-8')
-buf.close()
-
+    # Save plot to a base64 string
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    trend_plot = base64.b64encode(buf.read()).decode('utf-8')
+    buf.close()
 
     return render_template("report_ilf.html",
         average_amplitude=average_amplitude,
@@ -73,6 +72,7 @@ buf.close()
         shap_image=shap_image,
         trend_plot=trend_plot  # <-- new
     )
+
 
 
 
