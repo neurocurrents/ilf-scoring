@@ -58,7 +58,7 @@ buf = io.BytesIO()
 plt.savefig(buf, format='png')
 buf.seek(0)
 trend_plot = base64.b64encode(buf.read()).decode('utf-8')
-buf.close()
+    buf.close()
 
     return render_template("report_ilf.html",
                            average_amplitude=average_amplitude,
@@ -70,8 +70,8 @@ buf.close()
                            eeg_summary=eeg_summary,
                            notes=notes,
                            shap_image=shap_image,
-                           trend_plot=trend_plot  # <-- no comma here
-    )  # <-- This closes the render_template call
+                           trend_plot=trend_plot)
+
 
 
 
