@@ -58,7 +58,7 @@ buf = io.BytesIO()
 plt.savefig(buf, format='png')
 buf.seek(0)
 trend_plot = base64.b64encode(buf.read()).decode('utf-8')
-    buf.close()
+buf.close()
 
     return render_template("report_ilf.html",
                            average_amplitude=average_amplitude,
