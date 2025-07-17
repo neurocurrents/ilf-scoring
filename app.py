@@ -169,3 +169,7 @@ def predict_learning_response(alpha, smr, theta, ilf, t1, t2, t3, sessions):
                                 "Theta_start": theta, "Threshold1": t1, "Threshold2": t2,
                                 "Threshold3": t3, "n_sessions": sessions }])
     return rf_model.predict(input_df)[0], explainer.shap_values(input_df)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
+
