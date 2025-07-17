@@ -39,15 +39,20 @@ def score_ilf_public():
 
     else:
         average_amplitude = change = percent_change = stability_index = response_class = trend = None
+        shap_image = "shap_placeholder.png"  # Later this could be dynamically generated or selected
 
-    return render_template("report_ilf.html",
-        average_amplitude=average_amplitude,
-        trend=trend,
-        change=change,
-        percent_change=percent_change,
-        stability_index=stability_index,
-        response_class=response_class
-    )
+
+return render_template("report_ilf.html",
+    average_amplitude=average_amplitude,
+    trend=trend,
+    change=change,
+    percent_change=percent_change,
+    stability_index=stability_index,
+    response_class=response_class,
+    eeg_summary=eeg_summary,
+    notes=notes,
+    shap_image=shap_image
+)
 
 
 if __name__ == "__main__":
