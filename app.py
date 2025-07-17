@@ -5,62 +5,68 @@ import base64
 
 app = Flask(__name__)
 
+# Index route (sanity check)
 @app.route("/")
 def index():
     return "Flask is alive."
 
+# Route to show the ILF scoring form
+@app.route("/score-ilf-public", methods=["GET"])
+def show_ilf_form():
+    return render_template("score_ilf.html")
+
+# Route to handle form submission and generate report
 @app.route("/score-ilf-public", methods=["POST"])
 def score_ilf_public():
-    # Collect amplitude values from named inputs amp1 to amp40
+    # Collect amplitude data from form
     amplitudes = []
     for i in range(1, 41):
-        value = request.form.get(f"amp{i}")
-        if value:
+        val = request.form.get(f"amp{i}")
+        if val:
             try:
-                amplitudes.append(float(value))
+                amplitudes.append(float(val))
             except ValueError:
-                pass  # ignore non-numeric values
+                continue
 
-    # Optional fields
-    eeg_data = request.form.get("eeg_data", "")
-    behavior_notes = request.form.get("behavior_notes", "")
+    if not amplitudes:
+        return "No valid amplitude values provided.", 400
 
-    # Basic calculations
-    average_amplitude = sum(amplitudes) / len(amplitudes) if amplitudes else 0
-    change = amplitudes[-1] - amplitudes[0] if len(amplitudes) >= 2 else 0
-    percent_change = (change / amplitudes[0]) * 100 if len(amplitudes) >= 2 and amplitudes[0] != 0 else 0
-    stability_index = round((max(amplitudes) - min(amplitudes)) / average_amplitude, 2) if average_amplitude else 0
+    # Compute basic stats
+    average_amplitude = sum(amplitudes) / len(amplitudes)
+    change = amplitudes[-1] - amplitudes[0]
+    percent_change = (change / amplitudes[0]) * 100 if amplitudes[0] != 0 else 0
+    stability_index = round((max(amplitudes) - min(amplitudes)) / average_amplitude, 2)
+
+    # Simple logic
     response_class = "Improved" if percent_change > 10 else "Flat"
-    eeg_summary = "Stable pattern with mild gains."
-    notes = "User may benefit from continued titration."
-    shap_image = None  # Placeholder for SHAP logic
+    eeg_summary = request.form.get("eeg_data", "No EEG data provided.")
+    behavior_notes = request.form.get("behavior_notes", "No behavioral notes provided.")
+    notes = "User may benefit from continued titration." if percent_change < 10 else "Maintain current protocol if stable."
 
-    # Create the trend plot
-    import io
-    import matplotlib.pyplot as plt
-    import base64
-    buf = io.BytesIO()
+    # Generate trend plot
     plt.figure(figsize=(6, 3))
     plt.plot(amplitudes, marker='o', color='#007bff')
     plt.title("Amplitude Trend Over Sessions")
     plt.xlabel("Session")
     plt.ylabel("Amplitude")
     plt.tight_layout()
+
+    buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
     encoded = base64.b64encode(buf.read()).decode('utf-8')
     plot_url = f"data:image/png;base64,{encoded}"
 
-    # Render result
-    return render_template("report_ilf.html",
+    # Render results
+    return render_template(
+        "report_ilf.html",
         average_amplitude=average_amplitude,
         percent_change=percent_change,
         stability_index=stability_index,
         response_class=response_class,
         eeg_summary=eeg_summary,
+        behavior_notes=behavior_notes,
         notes=notes,
         plot_url=plot_url,
-        shap_image=shap_image,
-        eeg=eeg_data,
-        behavior=behavior_notes
+        shap_image=None  # reserved for future use
     )
