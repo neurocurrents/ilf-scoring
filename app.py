@@ -46,19 +46,19 @@ import io
 import base64
 
     # Generate trend plot
-    plt.figure(figsize=(6, 3))
-    plt.plot(amplitudes, marker='o', color='#007bff')
-    plt.title("Amplitude Trend Over Sessions")
-    plt.xlabel("Session")
-    plt.ylabel("Amplitude")
-    plt.tight_layout()
+plt.figure(figsize=(6, 3))
+plt.plot(amplitudes, marker='o', color='#007bff')
+plt.title("Amplitude Trend Over Sessions")
+plt.xlabel("Session")
+plt.ylabel("Amplitude")
+plt.tight_layout()
 
     # Save plot to a base64 string
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    trend_plot = base64.b64encode(buf.read()).decode('utf-8')
-    buf.close()
+buf = io.BytesIO()
+plt.savefig(buf, format='png')
+buf.seek(0)
+trend_plot = base64.b64encode(buf.read()).decode('utf-8')
+buf.close()
 
 
     return render_template("report_ilf.html",
