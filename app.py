@@ -71,7 +71,6 @@ buf.close()
         eeg_summary=eeg_summary,
         notes=notes,
         shap_image=shap_image,
-        trend_plot=trend_plot  # <-- new
     )
 
 
