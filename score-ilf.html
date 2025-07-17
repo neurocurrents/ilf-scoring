@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ILF Scoring</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 40px; }
+        h1 { color: #333; }
+        form { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .section { margin-bottom: 20px; }
+        textarea, input[type="text"] { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .results { background: #e9f7ef; padding: 20px; border-radius: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>ILF Session Scoring</h1>
+
+    <form method="POST" action="/score-ilf-public">
+
+        <!-- Paste-to-Fill Block -->
+        <div class="section">
+            <label><strong>Paste Session Amplitude Block (Auto-Fill):</strong></label>
+            <textarea id="pasteBlock" rows="10" placeholder="Paste like: Session 1: 0.22&#10;Session 2: 0.26"></textarea>
+            <button type="button" onclick="parseAndFill()">Auto-Fill Fields</button>
+        </div>
+
+        <!-- Amplitude Grid -->
+        <div class="section">
+            <label><strong>Enter Amplitudes for up to 40 Sessions:</strong></label>
+            <div class="grid">
+                {% for i in range(1, 41) %}
+                    <input type="text" name="amp{{ i }}" placeholder="Session {{ i }}">
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- EEG Input -->
+        <div class="section">
+            <label><strong>Optional EEG Summary:</strong></label>
+            <textarea name="eeg_data" rows="5" placeholder="Paste EEG findings or summary here..."></textarea>
+        </div>
+
+        <!-- Behavioral Notes -->
+        <div class="section">
+            <label><strong>Behavioral / Affective Notes:</strong></label>
+            <textarea name="behavior_notes" rows="3" placeholder="e.g., anxiety reduced, better sleep, irritability, tantrums, etc."></textarea>
+        </div>
+
+        <button type="submit">Score ILF</button>
+    </form>
+
+    <!-- Results Section -->
+    {% if result %}
+    <div class="results">
+        <h2>Scoring Results</h2>
+        <p><strong>Average Amplitude:</strong> {{ result.average }}</p>
+        <p><strong>Trend:</strong> {{ result.trend }}</p>
+        <p><strong>Change (Last - First):</strong> {{ result.change }}</p>
+        <p><strong>EEG Data Provided:</strong><br>{{ result.eeg }}</p>
+        <p><strong>Behavioral Notes:</strong><br>{{ result.behavior }}</p>
+    </div>
+    {% endif %}
+
+    <!-- JavaScript for Paste-to-Fill -->
+    <script>
+        function parseAndFill() {
+            const text = document.getElementById("pasteBlock").value;
+            const lines = text.trim().split("\n");
+
+            lines.forEach(line => {
+                const match = line.match(/Session\s+(\d+):\s*([\d.]+)/i);
+                if (match) {
+                    const index = parseInt(match[1]);
+                    const value = match[2];
+                    const input = document.querySelector(`input[name="amp${index}"]`);
+                    if (input) {
+                        input.value = value;
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
