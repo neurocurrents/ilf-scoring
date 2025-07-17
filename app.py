@@ -40,6 +40,25 @@ def score_ilf_public():
     else:
         average_amplitude = change = percent_change = stability_index = response_class = trend = None
         shap_image = "shap_placeholder.png"  # Later this could be dynamically generated or selected
+        
+import matplotlib.pyplot as plt
+import io
+import base64
+
+# Generate trend plot
+plt.figure(figsize=(6, 3))
+plt.plot(amplitudes, marker='o', color='#007bff')
+plt.title("Amplitude Trend Over Sessions")
+plt.xlabel("Session")
+plt.ylabel("Amplitude")
+plt.tight_layout()
+
+# Save plot to a base64 string
+buf = io.BytesIO()
+plt.savefig(buf, format='png')
+buf.seek(0)
+trend_plot = base64.b64encode(buf.read()).decode('utf-8')
+buf.close()
 
 
 return render_template("report_ilf.html",
@@ -51,8 +70,10 @@ return render_template("report_ilf.html",
     response_class=response_class,
     eeg_summary=eeg_summary,
     notes=notes,
-    shap_image=shap_image
+    shap_image=shap_image,
+    trend_plot=trend_plot  # <-- new
 )
+
 
 
 if __name__ == "__main__":
