@@ -60,8 +60,7 @@ buf.seek(0)
 trend_plot = base64.b64encode(buf.read()).decode('utf-8')
 buf.close()
 
-
-return render_template("report_ilf.html",
+    return render_template("report_ilf.html",
     average_amplitude=average_amplitude,
     trend=trend,
     change=change,
