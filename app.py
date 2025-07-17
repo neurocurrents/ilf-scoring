@@ -61,18 +61,18 @@ trend_plot = base64.b64encode(buf.read()).decode('utf-8')
 buf.close()
 
 
-return render_template("report_ilf.html",
-    average_amplitude=average_amplitude,
-    trend=trend,
-    change=change,
-    percent_change=percent_change,
-    stability_index=stability_index,
-    response_class=response_class,
-    eeg_summary=eeg_summary,
-    notes=notes,
-    shap_image=shap_image,
-    trend_plot=trend_plot  # <-- new
-)
+    return render_template("report_ilf.html",
+        average_amplitude=average_amplitude,
+        trend=trend,
+        change=change,
+        percent_change=percent_change,
+        stability_index=stability_index,
+        response_class=response_class,
+        eeg_summary=eeg_summary,
+        notes=notes,
+        shap_image=shap_image,
+        trend_plot=trend_plot  # <-- new
+    )
 
 
 
