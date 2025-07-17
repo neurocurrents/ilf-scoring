@@ -46,9 +46,18 @@
     </div>
 <h2>ILF Scoring Report</h2>
 
-<p><strong>Arousal Score:</strong> {{ arousal }} – {{ feedback.arousal }}</p>
-<p><strong>Emotional Stability Score:</strong> {{ emotion }} – {{ feedback.emotion }}</p>
-<p><strong>Sleep Score:</strong> {{ sleep }} – {{ feedback.sleep }}</p>
+<div class="card mt-4 p-4" style="background-color: #e7f8ee;">
+  <h4>Scoring Results</h4>
+  <p><strong>Average Amplitude:</strong> {{ average_amplitude }}</p>
+  <p><strong>Trend:</strong> {{ trend }}</p>
+  <p><strong>Change (Last - First):</strong> {{ change }}</p>
+  <p><strong>Percent Change:</strong> {{ percent_change }}%</p>
+  <p><strong>Stability Index:</strong> {{ stability_index }}</p>
+  <p><strong>Learning Classification:</strong> {{ response_class }}</p>
+  <p><strong>EEG Data Provided:</strong> {{ eeg_summary if eeg_summary else "None" }}</p>
+  <p><strong>Behavioral Notes:</strong> {{ notes if notes else "None" }}</p>
+</div>
+
 
 <a href="/ilf-form">Submit Another</a>
   
