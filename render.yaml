@@ -3,10 +3,7 @@ services:
     name: ilf-scoring
     env: python
     buildCommand: ""
-    startCommand: gunicorn app:app --reload --log-level debug
-
-
-
-    plan: free
+    startCommand: gunicorn app:app
+plan: free
 
 
