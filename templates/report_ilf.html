@@ -27,7 +27,8 @@
 <body>
   <div class="container">
     <h2>Infra-Low Frequency (ILF) Scoring Report</h2>
-    <p class="score">Predicted Learning Trend Score (PC1): <strong>{{ prediction }}</strong></p>
+    <p class="score">Predicted Learning Trend Score (PC1): <strong>{{ percent_change }}%</strong></p>
+
     <h3>Amplitude Trend Across Sessions</h3>
 <p>This chart visualizes how amplitude evolved over time during training.</p>
 <img src="data:image/png;base64,{{ trend_plot }}" alt="Trend over sessions chart" />
