@@ -14,6 +14,56 @@ def index():
 @app.route("/score-ilf-public", methods=["GET"])
 def show_ilf_form():
     return render_template("score_ilf.html")
+@app.route("/upload-ilf", methods=["GET", "POST"])
+def upload_ilf():
+    import pandas as pd
+    import os
+    from werkzeug.utils import secure_filename
+
+    if request.method == "POST":
+        file = request.files.get("file")
+        if not file:
+            return "No file uploaded.", 400
+
+        filename = secure_filename(file.filename)
+        if not filename.lower().endswith((".txt", ".csv")):
+            return "Unsupported file format. Please upload a .txt or .csv file.", 400
+
+        # Read file into DataFrame
+        try:
+            df = pd.read_csv(file, header=None)
+            amplitudes = df.iloc[:, 0].dropna().astype(float).tolist()
+        except Exception as e:
+            return f"Failed to process file: {str(e)}", 400
+
+        if not amplitudes:
+            return "No valid amplitude data found in file.", 400
+
+        # Compute stats
+        average_amplitude = sum(amplitudes) / len(amplitudes)
+        change = amplitudes[-1] - amplitudes[0]
+        percent_change = (change / amplitudes[0]) * 100 if amplitudes[0] != 0 else 0
+        stability_index = round((max(amplitudes) - min(amplitudes)) / average_amplitude, 2)
+        response_class = "Improved" if percent_change > 10 else "Flat"
+        notes = "User may benefit from continued titration." if percent_change < 10 else "Maintain current protocol if stable."
+
+        # Plotting
+        import matplotlib.pyplot as plt
+        import io
+        import base64
+
+        plt.figure(figsize=(6, 3))
+        plt.plot(amplitudes, marker='o', color='#28a745')
+        plt.title("ILF Amplitude Trend (Upload)")
+        plt.xlabel("Session")
+        plt.ylabel("Amplitude")
+        plt.tight_layout()
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        encoded = bas
+
 
 # Route to handle form submission and generate report
 @app.route("/score-ilf-public", methods=["POST"])
