@@ -8,7 +8,7 @@
         h1 { color: #333; }
         form { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .section { margin-bottom: 20px; }
-        textarea, input[type="text"] { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        textarea, input[type="text"], input[type="file"] { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
         button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
         button:hover { background: #0056b3; }
@@ -18,7 +18,18 @@
 <body>
     <h1>ILF Session Scoring</h1>
 
-    <form method="POST" action="/score-ilf-public">
+    <form method="POST" action="/score-ilf-public" enctype="multipart/form-data">
+
+        <!-- File Uploads -->
+        <div class="section">
+            <label><strong>Upload ILF Amplitude File (.txt or .csv)</strong></label>
+            <input type="file" name="ilf_file">
+        </div>
+
+        <div class="section">
+            <label><strong>Upload EEG File (.csv only for now)</strong></label>
+            <input type="file" name="eeg_file">
+        </div>
 
         <!-- Paste-to-Fill Block -->
         <div class="section">
@@ -68,10 +79,10 @@
     <script>
         function parseAndFill() {
             const text = document.getElementById("pasteBlock").value;
-            const lines = text.trim().split("\n");
+            const lines = text.trim().split("\\n");
 
             lines.forEach(line => {
-                const match = line.match(/Session\s+(\d+):\s*([\d.]+)/i);
+                const match = line.match(/Session\\s+(\\d+):\\s*([\\d.]+)/i);
                 if (match) {
                     const index = parseInt(match[1]);
                     const value = match[2];
